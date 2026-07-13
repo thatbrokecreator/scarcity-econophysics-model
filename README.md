@@ -21,7 +21,8 @@ I tested the ROSCA mechanism's real effect by running the simulation with and wi
 it active, across a range of poverty line thresholds, measuring the resulting Gini
 coefficient.
 
-![ROSCA Comparison](results/scarcity_rosca_comparison.png)
+![ROSCA Comparison](econophysics_simulation/results/scarcity_rosca_comparison.png)
+
 
 **Finding:** ROSCA has little to no measurable effect on inequality — the Gini
 coefficient is nearly identical with and without it. I instrumented the simulation to
@@ -36,7 +37,7 @@ regardless of how favorable its terms are.
 I tested whether letting poor agents actively seek out other poor agents (rather than
 relying on random collision) would close this gap.
 
-![ROSCA Fix Comparison](results/rosca_fix_comparison.png)
+![ROSCA Fix Comparison](econophysics_simulation/results/rosca_fix_comparison.png)
 
 **Finding: the fix backfired** — Gini coefficient rose slightly (0.543 vs. 0.518 for
 random pairing). Two reasons: (1) the fix is asymmetric — wealthy agents are still
