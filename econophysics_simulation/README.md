@@ -1,23 +1,84 @@
 # Scarcity-Driven Econophysics Simulation
 
-This project is an agent-based computational model that bridges statistical mechanics with behavioral finance. It simulates how wealth distributes across a population under standard thermodynamic conditions and explores how the system warps when introducing cognitive constraints and informal risk-pooling structures.
+This project is an agent-based computational model that bridges statistical mechanics with
+behavioral finance. It simulates how wealth distributes across a population under standard
+thermodynamic conditions and explores how the system warps when introducing cognitive
+constraints and informal risk-pooling structures.
 
 ## Theoretical Framework
 
-The simulation builds directly on the principles of econophysics, drawing an analogy between the kinetic theory of gases and the circulation of money:
-* **The Physics Baseline:** In a closed system, gas molecules exchange kinetic energy through random collisions, naturally settling into a Boltzmann-Gibbs distribution. Here, individual economic agents exchange wealth through localized transactions. 
-* **The Bandwidth Tax:** Moving beyond standard rational-actor models, the simulation implements a behavioral threshold (Poverty Line). When an agent's wealth drops below this line, their cognitive capacity is taxed due to environmental stress, skewing transaction dynamics against them.
-* **Informal Architectures:** To simulate resilience, the model includes a defensive mechanism mimicking Rotating Savings and Credit Associations (ROSCAs). When two scarce agents interact, they leverage social collateral to split the transaction 50/50, flattening the steepness of the wealth distribution curve and creating a consumption-smoothing floor.
+The simulation builds directly on the principles of econophysics, drawing an analogy between
+the kinetic theory of gases and the circulation of money:
+
+* **The Physics Baseline:** In a closed system, gas molecules exchange kinetic energy through
+  random collisions, naturally settling into a Boltzmann-Gibbs distribution. Here, individual
+  economic agents exchange wealth through localized transactions.
+* **The Bandwidth Tax:** Moving beyond standard rational-actor models, the simulation
+  implements a behavioral threshold (Poverty Line). When an agent's wealth drops below this
+  line, their cognitive capacity is taxed due to environmental stress, skewing transaction
+  dynamics against them.
+* **Informal Architectures:** To simulate resilience, the model includes a defensive
+  mechanism mimicking Rotating Savings and Credit Associations (ROSCAs). When two scarce
+  agents interact, they leverage social collateral to split the transaction 50/50, in theory
+  flattening the steepness of the wealth distribution curve.
 
 ## Features
 
 - **Agent-Based Modeling:** Tracks 1,000 distinct agents over 100,000 algorithmic transactions.
 - **Asymmetric Transaction Dynamics:** Simulates the structural trapping of low-wealth cohorts.
-- **Dynamic Visualization:** Generates real-time Matplotlib plots of final wealth distribution configurations compared against baseline asset averages.
+- **Dynamic Visualization:** Generates real-time Matplotlib plots of final wealth distribution
+  configurations compared against baseline asset averages.
 
 ## Installation & Execution
 
 1. Clone or open the project workspace.
 2. Install dependencies via the terminal:
-   ```bash
+```bash
    pip install numpy matplotlib
+```
+3. Run the base simulation:
+```bash
+   python econophysics_simulation/simulation.py
+```
+
+## Results: Does ROSCA Risk-Pooling Actually Reduce Inequality?
+
+I tested the ROSCA mechanism's real effect by running the simulation with and without it
+active, across a range of poverty line thresholds, measuring the resulting Gini coefficient.
+
+![ROSCA Comparison](econophysics_simulation/results/scarcity_rosca_comparison.png)
+
+**Finding:** ROSCA has little to no measurable effect on inequality — the Gini coefficient
+is nearly identical with and without it. I instrumented the simulation to count how often
+each rule actually fires, and found exploitation events consistently outnumber
+ROSCA-protected events by roughly 3–5x. This is structural: ROSCA requires *both*
+interacting agents to be poor (a joint condition), while exploitation requires only *one* —
+so the protective rule is invoked far less often than the harmful one, regardless of how
+favorable its terms are.
+
+## Testing a Fix: Preferential Matching
+
+I tested whether letting poor agents actively seek out other poor agents (rather than
+relying on random collision) would close this gap.
+
+![ROSCA Fix Comparison](econophysics_simulation/results/rosca_fix_comparison.png)
+
+**Finding: the fix backfired** — Gini coefficient rose slightly (0.543 vs. 0.518 for random
+pairing). Two reasons: (1) the fix is asymmetric — wealthy agents are still randomly paired,
+so they can still initiate exploitation of a poor agent regardless of that agent's "seeking"
+behavior; (2) guaranteed 50/50 splits remove the variance that occasionally let poor agents
+get a favorable random split under the original rule, trading a small chance of upward
+mobility for guaranteed stagnation.
+
+**Implication:** interventions that increase the frequency of a "fair" mechanism can still
+fail if they don't also reduce exposure to the harmful one, and removing outcome variance
+can suppress upward mobility even while nominally "helping." A more complete fix would need
+to also shield poor agents from wealthy-initiated exploitation, not just increase their
+access to peer risk-pooling.
+
+## Limitations
+
+This model captures only pairwise transaction dynamics and does not include inherited
+wealth, differential asset returns, labor income, or taxation. The ROSCA mechanism as
+modeled only responds to a joint poverty condition rather than any active coordination
+between agents, which likely understates how real informal risk-pooling networks function.
