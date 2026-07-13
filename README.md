@@ -14,30 +14,39 @@ The simulation builds directly on the principles of econophysics, drawing an ana
 2. Install dependencies via the terminal:
    ```bash
    pip install numpy matplotlib
+
 ## Results: Does ROSCA Risk-Pooling Actually Reduce Inequality?
 
-To test whether the ROSCA mechanism meaningfully protects against the Bandwidth Tax
-exploitation rule, I ran the simulation with and without ROSCA active, across a range
-of poverty line thresholds, measuring the resulting Gini coefficient.
+I tested the ROSCA mechanism's real effect by running the simulation with and without
+it active, across a range of poverty line thresholds, measuring the resulting Gini
+coefficient.
 
 ![ROSCA Comparison](results/scarcity_rosca_comparison.png)
 
-**Finding: the ROSCA mechanism has little to no measurable effect on inequality** —
-the Gini coefficient is nearly identical with and without it, across every poverty
-line tested.
+**Finding:** ROSCA has little to no measurable effect on inequality — the Gini
+coefficient is nearly identical with and without it. I instrumented the simulation to
+count how often each rule actually fires, and found exploitation events consistently
+outnumber ROSCA-protected events by roughly 3–5x. This is structural: ROSCA requires
+*both* interacting agents to be poor (a joint condition), while exploitation requires
+only *one* — so the protective rule is invoked far less often than the harmful one,
+regardless of how favorable its terms are.
 
-**Why:** I instrumented the simulation to count how often each rule actually fires.
-Exploitation events (`poor_a_exploited` + `poor_b_exploited`) consistently outnumber
-ROSCA-protected events by roughly 3–5x, even at high poverty lines. This is structural:
-ROSCA only activates when *both* interacting agents happen to be poor — a joint
-condition — while exploitation activates whenever *either* agent is poor. The
-protective mechanism is triggered far less often than the exploitative one simply
-because it requires a rarer coincidence, regardless of how favorable its terms are
-when it does trigger.
+## Testing a Fix: Preferential Matching
 
-**Implication:** a risk-pooling mechanism's real-world effectiveness depends not just
-on how generous it is when used, but on how often it's actually invoked relative to
-the harms it's meant to offset. A next step would be testing whether increasing
-ROSCA participation likelihood (e.g., poor agents preferentially seeking out other
-poor agents rather than meeting them randomly) closes this gap — which would mirror
-how real ROSCAs work: by intentional membership, not random encounter.
+I tested whether letting poor agents actively seek out other poor agents (rather than
+relying on random collision) would close this gap.
+
+![ROSCA Fix Comparison](results/rosca_fix_comparison.png)
+
+**Finding: the fix backfired** — Gini coefficient rose slightly (0.543 vs. 0.518 for
+random pairing). Two reasons: (1) the fix is asymmetric — wealthy agents are still
+randomly paired, so they can still initiate exploitation of a poor agent regardless of
+that agent's "seeking" behavior; (2) guaranteed 50/50 splits remove the variance that
+occasionally let poor agents get a favorable random split under the original rule,
+trading a small chance of upward mobility for guaranteed stagnation.
+
+**Implication:** interventions that increase the frequency of a "fair" mechanism can
+still fail if they don't also reduce exposure to the harmful one, and removing outcome
+variance can suppress upward mobility even while nominally "helping." A more complete
+fix would need to also shield poor agents from wealthy-initiated exploitation, not just
+increase their access to peer risk-pooling.
