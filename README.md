@@ -14,4 +14,30 @@ The simulation builds directly on the principles of econophysics, drawing an ana
 2. Install dependencies via the terminal:
    ```bash
    pip install numpy matplotlib
+## Results: Does ROSCA Risk-Pooling Actually Reduce Inequality?
 
+To test whether the ROSCA mechanism meaningfully protects against the Bandwidth Tax
+exploitation rule, I ran the simulation with and without ROSCA active, across a range
+of poverty line thresholds, measuring the resulting Gini coefficient.
+
+![ROSCA Comparison](results/scarcity_rosca_comparison.png)
+
+**Finding: the ROSCA mechanism has little to no measurable effect on inequality** —
+the Gini coefficient is nearly identical with and without it, across every poverty
+line tested.
+
+**Why:** I instrumented the simulation to count how often each rule actually fires.
+Exploitation events (`poor_a_exploited` + `poor_b_exploited`) consistently outnumber
+ROSCA-protected events by roughly 3–5x, even at high poverty lines. This is structural:
+ROSCA only activates when *both* interacting agents happen to be poor — a joint
+condition — while exploitation activates whenever *either* agent is poor. The
+protective mechanism is triggered far less often than the exploitative one simply
+because it requires a rarer coincidence, regardless of how favorable its terms are
+when it does trigger.
+
+**Implication:** a risk-pooling mechanism's real-world effectiveness depends not just
+on how generous it is when used, but on how often it's actually invoked relative to
+the harms it's meant to offset. A next step would be testing whether increasing
+ROSCA participation likelihood (e.g., poor agents preferentially seeking out other
+poor agents rather than meeting them randomly) closes this gap — which would mirror
+how real ROSCAs work: by intentional membership, not random encounter.
